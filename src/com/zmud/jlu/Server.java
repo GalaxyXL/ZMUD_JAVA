@@ -4,35 +4,56 @@ import java.io.*;
 import java.net.*;
 
 public class Server {
-
+	
+	//Set server port number
+	public static final int PORT_NUM = 2888;
+	
+	//Set server socket to accept from client
+	ServerSocket serverSocket;
+	
+	//Initial server
+	public Server() throws IOException {
+		serverSocket = new ServerSocket(PORT_NUM);
+	}
+	
+	public void start() throws IOException {
+		while(true) {
+			Socket socket = serverSocket.accept();
+			new ServerThread(socket).start();
+		}
+	}
+	
+	//Server thread creation and run
 	static class ServerThread extends Thread {
+		Socket socket;
 
 		public ServerThread(Socket socket) {
-			//添加
+			this.socket = socket;
 		}
-
-		Socket socket;
 
 		@Override
 		public void run() {
 			try {
-				//服务器响应代码在这里添加
+				Writer output  = new OutputStreamWriter(socket.getOutputStream());		//Pass control command
+				DataInputStream input = new DataInputStream(socket.getInputStream());	//Get data from client
+				
+				//Verification
+				output.write("WHO_ARE_YOU");
+				output.flush();
+				
+				System.out.println("Client Connected!");			//Print id information
+				
+				socket.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public static int PORT_NUM = 1888;
+	
 
 	static public void main(String[] args) throws IOException {
-		
-		ServerSocket serverSocket = new ServerSocket(PORT_NUM);
-		for (;;) {
-			Socket socket = serverSocket.accept();
-			new ServerThread(socket).start();
-
-		}
+		new Server().start();
 	}//end main
 
 }//end Server class

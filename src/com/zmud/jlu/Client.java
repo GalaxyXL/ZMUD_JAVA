@@ -8,9 +8,23 @@ import java.awt.event.*;
 import java.util.*;
 
 public class Client extends JFrame {
+	//Main screen
 	private JTextArea screen;
+	
+	//Input Field
 	private JTextField input;
+	
+	//Connection button
 	private JButton connection;
+	
+	//Show map button
+	private JButton map;
+	
+	//Help Document botton
+	private JButton helpdoc;
+	
+	//Exit buttom
+	private JButton exit;
 
 	private Socket socket;
 	private BufferedReader in;
@@ -33,6 +47,10 @@ public class Client extends JFrame {
 			
 		}
 	}
+	
+	public void connet (InetAddress address) throws IOException {
+		this.socket = new Socket(address, Server.PORT_NUM);
+	}
 
 	public Client() {
 		super("Mud Client");
@@ -41,21 +59,51 @@ public class Client extends JFrame {
 		JPanel leftPanel = new JPanel();
 		JPanel rightPanel = new JPanel();
 		container.add(BorderLayout.CENTER, leftPanel);
-		container.add(BorderLayout.EAST, rightPanel);
+		container.add(BorderLayout.NORTH, rightPanel);
+		
 		leftPanel.setLayout(new BorderLayout());
+		rightPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+		
 		screen = new JTextArea();
 		screen.setEditable(false);
 		screen.setAutoscrolls(true);
 		JScrollPane jsp = new  JScrollPane(screen);
+		
+		//Button
 		input = new JTextField();
-		connection = new JButton("conncet");
+		connection = new JButton("Conncet");	//Initial connection button
+		helpdoc = new JButton("Help Doc");		//Initial help document button
+		map = new JButton("Map");				//Initial map button
+		exit = new JButton("Exit");				//Initial exit button
+		
+		Dimension preferredJbSize = new Dimension(295,30); 
+		connection.setPreferredSize(preferredJbSize);
+		helpdoc.setPreferredSize(preferredJbSize);
+		map.setPreferredSize(preferredJbSize);
+		exit.setPreferredSize(preferredJbSize);
+		
+		//Set button bounds
+		connection.setBorderPainted(false);
+		helpdoc.setBorderPainted(false);
+		map.setBorderPainted(false);
+		exit.setBorderPainted(false);
+		
 		leftPanel.add(BorderLayout.CENTER, jsp);
 		leftPanel.add(BorderLayout.SOUTH, input);
-		// rightPanel.setLayout(new FlowLayout());
+		
+		//Add button to panel
 		rightPanel.add(connection);
-		this.setSize(800, 600);
+		rightPanel.add(helpdoc);
+		rightPanel.add(map);
+		rightPanel.add(exit);
+		
+		
+		this.setSize(1200, 800);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		//Connect to Server
+		
 		input.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent arg0) {
 				// TODO Auto-generated method stub
@@ -68,8 +116,17 @@ public class Client extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				try {
-					//连接服务器在这里添加
-
+					connet(InetAddress.getLoopbackAddress());
+					BufferedReader input = new BufferedReader(new InputStreamReader(
+							socket.getInputStream())); //Get control command
+					DataOutputStream output = new DataOutputStream(socket.getOutputStream());	//Pass data
+					
+					String cmd = input.readLine();
+					if(cmd.equals("WHO_ARE_YOU")){
+						screen.setText("Connected!");
+					}
+					socket.close();
+					//screen.setText("Test");
 				} catch (Exception e) {
 					e.printStackTrace();
 					screen.setText(screen.getText() + "链接服务器失败！请重试\n");
