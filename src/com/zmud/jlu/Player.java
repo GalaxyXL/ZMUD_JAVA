@@ -14,6 +14,7 @@ public class Player {
 	private String username;
 	private String party;
 	private String location;
+	private String password;
 
 	public Player() {
 		// creat player default value

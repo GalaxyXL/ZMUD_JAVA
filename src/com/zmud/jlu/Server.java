@@ -4,9 +4,11 @@ import java.io.*;
 import java.net.*;
 
 public class Server {
-	
+	public static int i = 0;
 	//Set server port number
 	public static final int PORT_NUM = 2888;
+	
+	
 	
 	//Set server socket to accept from client
 	ServerSocket serverSocket;
@@ -30,20 +32,33 @@ public class Server {
 		public ServerThread(Socket socket) {
 			this.socket = socket;
 		}
-
+		
+		//String incmd;
+		
 		@Override
 		public void run() {
 			try {
 				Writer output  = new OutputStreamWriter(socket.getOutputStream());		//Pass control command
 				DataInputStream input = new DataInputStream(socket.getInputStream());	//Get data from client
 				
+				BufferedReader incmd = new BufferedReader(new InputStreamReader(
+						socket.getInputStream())); //Get control command
+				
 				//Verification
-				output.write("WHO_ARE_YOU");
+				String cmd = incmd.readLine();
+				//String cmd = "hello";
+				if(!cmd.equals("\n")){
+				System.out.println(cmd);
+				}else{
+					incmd.readLine();
+				}
+				output.write("WHO_ARE_YOU?\n");
 				output.flush();
+				//socket.shutdownOutput();
+				//socket.shutdownInput();
+				//System.out.println("Client Connected!");			//Print id information
 				
-				System.out.println("Client Connected!");			//Print id information
-				
-				socket.close();
+				//socket.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
