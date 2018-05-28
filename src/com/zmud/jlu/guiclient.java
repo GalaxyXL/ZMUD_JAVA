@@ -50,6 +50,7 @@ public class guiclient extends JFrame {
 	JTextArea textArea_2 = new JTextArea();
 	
 	JTextField input = new JTextField();
+	JTextField textField_1;
 
 	/**
 	 * Launch the application.
@@ -202,5 +203,6 @@ public class guiclient extends JFrame {
 		gbc_textField.gridy = 17;
 		panel_1.add(input, gbc_textField);
 		input.setColumns(10);
+		
 	}
 }

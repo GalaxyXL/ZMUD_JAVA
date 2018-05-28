@@ -20,8 +20,6 @@ public class Client extends guiclient{
 	private BufferedReader in;
 	private Writer out;
 
-	private String ipaddress = "127.0.0.1";
-	private int port = 2888;
 	private boolean connected = false;
 
 	//Get information from server
@@ -39,7 +37,7 @@ public class Client extends guiclient{
 					cmd = in.readLine();
 				} catch (Exception e) {
 					try {
-						this.sleep(1000);
+						this.sleep(500);
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}
