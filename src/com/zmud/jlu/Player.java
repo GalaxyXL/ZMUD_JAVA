@@ -1,6 +1,15 @@
 package com.zmud.jlu;
 
+//import org.dom4j.DOMImplementation;
+
+
+
+
 public class Player {
+	
+	public static int useramount = XmlFileManagement.readAmount(
+			XmlFileManagement.getRootElement(
+					XmlFileManagement.getDocment("Players.xml")));
 
 	private int experience;
 	private int con;
@@ -10,16 +19,24 @@ public class Player {
 	private int hp, max_hp;
 	private int nl, max_nl;
 	private int jl, max_jl;
-	private String id;
+	private int id;
 	private String username;
-	private String party;
+	private String party;	//∞Ô≈…
 	private String location;
 	private String password;
 
 	public Player() {
 		// creat player default value
 	}
-	public Player(int experience,int con,int dex,int str,int wis,int hp,int max_hp,int nl,int max_nl,int jl,int max_jl,String id,String username,String party,String location){
+	
+	public Player(String username, String password){
+		this.username = username;
+		this.password = password;
+	}
+		
+		
+	
+	public Player(int experience,int con,int dex,int str,int wis,int hp,int max_hp,int nl,int max_nl,int jl,int max_jl,int id,String username,String party,String location){
 		this.experience = experience;
 		this.con = con;
 		this.dex = dex;
@@ -59,16 +76,24 @@ public class Player {
 	public String getLocation(){
 		return this.location;
 	}
-	public String getId(){
+	public int getId(){
 		return id;
 	}
 	public void setId(String id){
-		
+		this.id = Integer.parseInt(id);
 	}
 	public String getName(){
 		return this.username;
 	}
 	public void setName(String username){
 		
+	}
+	
+	public static void setUserAmount(int a){
+		useramount = a;
+	}
+	
+	public static int getUserAmount(){
+		return useramount;
 	}
 }

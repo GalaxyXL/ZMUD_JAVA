@@ -28,6 +28,8 @@ import javax.swing.SpringLayout;
 
 public class guiclient extends JFrame {
 
+	private static final String version = "0.2";
+	
 	public JPanel contentPane;
 	
 	
@@ -70,18 +72,21 @@ public class guiclient extends JFrame {
 	 * Create the frame.
 	 */
 	public guiclient() {
-		super("ZMUD_0.1Beta");
+		super(version);
 		//Set Scroll
 		textArea.setEditable(false);
 		textArea.setAutoscrolls(true);
+		textArea.setLineWrap(true);
 		JScrollPane jsTextArea = new JScrollPane(textArea);
 		
 		textArea_1.setEditable(false);
 		textArea_1.setAutoscrolls(true);
+		textArea_1.setLineWrap(true);
 		JScrollPane jsTextArea_1 = new JScrollPane(textArea_1);
 		
 		textArea_2.setEditable(false);
 		textArea_2.setAutoscrolls(true);
+		textArea_2.setLineWrap(true);
 		JScrollPane jsTextArea_2 = new JScrollPane(textArea_2);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

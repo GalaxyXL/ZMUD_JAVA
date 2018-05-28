@@ -234,4 +234,8 @@ public class RoomManagement {
 		cityMap.put(room_geyuan.getRoomId(), room_geyuan);
 		cityMap.put(room_xiaopangu.getRoomId(), room_xiaopangu);
 	}
+	
+	public static Map<String, Room> getCityMap(){
+		return cityMap;
+	}
 }

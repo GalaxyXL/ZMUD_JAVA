@@ -11,72 +11,73 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-public class Client extends guiclient {
-
+public class Client extends guiclient{
+	
 	//Input command
 	private String incmd;
 	
 	private Socket socket;
 	private BufferedReader in;
-	private BufferedWriter out;
+	private Writer out;
 
 	private String ipaddress = "127.0.0.1";
-	private int port = 1888;
+	private int port = 2888;
 	private boolean connected = false;
 
 	//Get information from server
 	class MonitorThread extends Thread {
-		public MonitorThread() throws IOException {
-			//添加
-			connet(InetAddress.getLoopbackAddress());
-		}
-
 		String cmd;
-		BufferedReader br = in;
+		
+		public MonitorThread() {
+
+		}
 
 		@Override
 		public void run() {
-			try {
-				while((cmd = br.readLine()) != null)
-					textArea.append(cmd + "\n");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			while(true){
+				try {
+					cmd = in.readLine();
+				} catch (Exception e) {
+					try {
+						this.sleep(1000);
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+					continue;
+				}
+				textArea.append(cmd + "\n");
 			}
 		}
 	}
 	
+	//Establish connection to server
 	public void connet (InetAddress address) throws IOException {
 		this.socket = new Socket(address, Server.PORT_NUM);
 	}
 	
 	
 	//Send command to server
-	public void sendCmdtoServer(String cmd, Socket socket) throws IOException{
+	public void sendCmdtoServer(String cmd) throws IOException{
 		try{
-			//connet(InetAddress.getLoopbackAddress());
 			Writer output = new OutputStreamWriter(socket.getOutputStream());
-			output.write(cmd);
+			output.write(cmd + "\n");
 			output.flush();
-			output.close();
-			//socket.shutdownOutput();
 		}catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
 	}
 	
 	//Get message from server
-	public void getCmdfromServer(Socket socket) throws IOException{
-		try{
-			connet(InetAddress.getLoopbackAddress());
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					socket.getInputStream())); //Get control command
-			String cmd = in.readLine();
-			textArea.append(cmd + "\n");
-		}catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
+	public void getCmdfromServer() {
+		String message;
+		while(connected){
+			try {
+				if((message = in.readLine()) == null)
+					break;
+				textArea.append(message);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -88,26 +89,23 @@ public class Client extends guiclient {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				//Enter listener for user command
-				if(e.getKeyCode() == KeyEvent.VK_ENTER){
-					try {
-						connet(InetAddress.getLoopbackAddress());
-					} catch (IOException e2) {
-						// TODO Auto-generated catch block
-						e2.printStackTrace();
-					}
+				if(e.getKeyCode() == KeyEvent.VK_ENTER && connected){
 					incmd = input.getText();
 					//Blank check
 					if(!(incmd.equals(""))){
 						try {
-							sendCmdtoServer(incmd, socket);
+							sendCmdtoServer(incmd);
 							//socket.close();
 						} catch (IOException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						} 
 						input.setText("");
 						textArea_1.append(incmd + "\n");
 					}
+				}else if (e.getKeyCode() == KeyEvent.VK_ENTER && !connected) {	//Connection check
+					incmd = input.getText();
+					input.setText("");
+					textArea_1.append(incmd + "\n");
 				}
 				
 			}
@@ -133,21 +131,22 @@ public class Client extends guiclient {
 				// Connect to server
 				try {
 					connet(InetAddress.getLoopbackAddress());
-					BufferedReader in = new BufferedReader(new InputStreamReader(
+					in = new BufferedReader(new InputStreamReader(
 							socket.getInputStream())); //Get control command
-					Writer out = new OutputStreamWriter(socket.getOutputStream());	//Pass data
-					out.write("Connecting...\n");
-					out.flush();
-					
-					socket.setSoTimeout(3000);
-					String cmd = in.readLine();
-					if(cmd.equals("WHO_ARE_YOU?")){
-						textArea.setText(textArea.getText() + cmd + "\n");
-						connected = true;
-						out.close();
+					out = new OutputStreamWriter(socket.getOutputStream());	//Pass data
+					String cmd = "";
+					if(!connected){
+						out.write("I_AM_CLIENT\n");
+						out.flush();
+						socket.setSoTimeout(3000);
+						cmd = in.readLine();
 					}
-					//socket.close();
-					//screen.setText("Test");
+					if(cmd.equals("CONNECTION_ESTABLISHED") && !connected){
+						textArea_1.setText(textArea.getText() + cmd + "\n");
+						connected = true;
+					}else if(connected) {	//Connection check
+						textArea_1.append("Already Connected\n");
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 					textArea_1.setText(textArea_1.getText() + "链接服务器失败！请重试\n");
@@ -161,38 +160,41 @@ public class Client extends guiclient {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
 				try{
+					out.write("GOOD_BYE\n");
+					out.flush();
 					connected = false;
 					socket.close();
 					//in.close();
-					//out.close();
+					out.close();
 					System.exit(0);
 				} catch (Exception e) {
-					// TODO: handle exception
 					e.printStackTrace();
 					System.exit(1);
 				}
 			}
 		});
 		
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				try{
+					out.write("GOOD_BYE\n");
+					out.flush();
+					connected = false;
+					socket.close();
+					out.close();
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				super.windowClosing(arg0);
+			}
+		});
 	}
-
+	
+	//
 	public void setDefaultCloseOperation(int arg0) {
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		if (connected) {
-			try {
-				connected = false;
-				socket.close();
-				in.close();
-				out.close();
-				System.out.println("All closed");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//System.exit(1);
 	}
 
 	public void setText(JTextArea screen, String Message) {
@@ -207,15 +209,16 @@ public class Client extends guiclient {
 	public void start() throws IOException{
 			new MonitorThread().start();
 	}
-
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					Client frame = new Client();
 					frame.setVisible(true);
+					frame.getCmdfromServer();
+					frame.start();
 					frame.setResizable(false);
-					//frame.start();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
