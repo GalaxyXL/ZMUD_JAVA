@@ -2,6 +2,8 @@ package com.zmud.jlu;
 
 import java.util.*;
 
+import com.zmud.jlu.Server.ServerThread;
+
 public class Room {
 
 	private HashMap<CommonContent.DIRECTION, Room> neighbor = new HashMap<CommonContent.DIRECTION, Room>();
@@ -24,20 +26,33 @@ public class Room {
 
 	public void exist(Player player, CommonContent.DIRECTION direction) {
 		
-
 	}
 
+	//enter room
 	public void enter(Player player, CommonContent.DIRECTION direction) {
-		
+		removePlayer(player);
+		player.setRoom(neighbor.get(direction).getRoomId());
+		neighbor.get(direction).addPlayer(player);
 	}
+	
+	//Remove player push notify to other user
 	public void removePlayer(Player player){
-	//用户退出后，清除用户在列表中内容，通知房间内其他玩家
-		
+		playerList.remove(Integer.toString(player.getId()), player);
+		Iterator it = playerList.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, Player> mplayer = (Map.Entry)it.next();
+			MessageManagement.showToPlayer(mplayer.getValue(), "玩家" + player.getName() + "离开了了房间");
+		}
 	}
+	
 	public void addPlayer(Player player){
 	//用户连线进入，加入列表，通知房间其他玩家
-		
-		
+		Iterator it = playerList.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, Player> mplayer = (Map.Entry)it.next();
+			MessageManagement.showToPlayer(mplayer.getValue(), "玩家" + player.getName() + "进入了房间");
+		}
+		playerList.put(Integer.toString(player.getId()), player);
 	}
 
 	public void setDescription(String roomDescription) {
@@ -73,21 +88,7 @@ public class Room {
 		roomLooking = roomName + "\t";
 		// 房间描述
 		// 应该由Client负责解析传输过来的字符（设定字体，每行字数）
-		int roomDescriptionLength = roomDescription.length();
-		if (roomDescriptionLength <= CommonContent.CHARS_PER_LINE)
-			roomLooking += roomDescription + "\t";
-		else {
-			int i;
-			for (i = 0; i <= roomDescriptionLength
-					- CommonContent.CHARS_PER_LINE; i = i
-					+ CommonContent.CHARS_PER_LINE) {
-				roomLooking += roomDescription.substring(i, i
-						+ CommonContent.CHARS_PER_LINE)
-						+ "\t";
-			}
-			roomLooking += roomDescription.substring(i, roomDescriptionLength)
-					+ "\t";
-		}
+		roomLooking += roomDescription + "\t";
 
 		// 房间出口
 		roomLooking += getChuKou() + "\t";
@@ -99,9 +100,13 @@ public class Room {
 		return roomLooking;
 	}
 	private String listRoomPlayers(){
-		//列出这个房间中的所有玩家
 		String temp = "";
-		
+		Iterator it = playerList.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, Player> mplayer = (Map.Entry)it.next();
+			temp +=  mplayer.getValue().getName() + "\t";
+		}
+		//列出这个房间中的所有玩家
 		return temp;
 	}
 	private String getChuKou() {
@@ -110,6 +115,12 @@ public class Room {
 		 * 
 		 * */
 		String temp = "";
+		Iterator it = neighbor.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<CommonContent.DIRECTION, Room> chukou = (Map.Entry)it.next();
+			temp += chukou.getKey() + chukou.getValue().getRoomName() + "\t";
+		}
+		
 		
 		return temp;
 	}

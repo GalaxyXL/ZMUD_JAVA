@@ -13,14 +13,19 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
+import com.zmud.jlu.Server.ServerThread;
+
 public class UserInput {
-	public static void dealInput(String inputMessage, BufferedWriter output, BufferedReader input) throws IOException{
+	
+	
+	public static Player dealInput(String inputMessage, BufferedWriter output, BufferedReader input) throws IOException{
 		/*
 		 * Dealing with command register and login
 		 */
 		String incmd;
 		String username, password;
-		Map<String, Room> CityMap = RoomManagement.getCityMap();
+		Player p0 = null;
+		Room location = null;
 		
 		if(inputMessage.equalsIgnoreCase("register")){
 			output.write("请输入用户名：\n");
@@ -36,16 +41,18 @@ public class UserInput {
 			output.write(incmd + "\n");
 			output.flush();
 			
-			Player p0 = new Player(username, password);
+			p0 = new Player(username, password);
 			XmlFileManagement.addNewPlayer(username, password);
 			p0.setId(Integer.toString(Player.getUserAmount()));
 			
 			MessageManagement.addPlayerChannels(Integer.toString(p0.getId()), output);
 
-			Room location = CityMap.get("yangzhou_guangchang");
+			location = Server.CityMap.get("yangzhou_guangchang");
 			
 			location.addPlayer(p0);
 			MessageManagement.showToPlayer(p0, location.getDescription());
+			p0.setRoom(location.getRoomId());
+			return p0;
 		}
 		
 		else if(inputMessage.equalsIgnoreCase("login")){
@@ -67,14 +74,19 @@ public class UserInput {
 			
 			password = XmlFileManagement.getPlayerPassword(player);
 			if(incmd.equals(password)){
-				Player p0 = XmlFileManagement.getPlayerAllInfoById(XmlFileManagement.getPlayerId(player));
+				p0 = XmlFileManagement.getPlayerAllInfoById(XmlFileManagement.getPlayerId(player));
 				MessageManagement.addPlayerChannels(Integer.toString(p0.getId()), output);
 				MessageManagement.showToPlayer(p0, "登陆成功！");
+				location = Server.CityMap.get(XmlFileManagement.getRequiredPlayerInfo(player, "room"));
+				location.addPlayer(p0);
+				p0.setRoom(location.getRoomId());
+				return p0;
 			}else{
 				output.write("密码错误！\n");
 				output.flush();
 			}
 		}
+		return null;
 	}
 	
 	public static void dealInput(Player player, String inputMessage) {
@@ -85,7 +97,7 @@ public class UserInput {
 		String[] inputs = inputMessage.split(" ");
 		if (inputs[0].equals("l") || inputs[0].equals("look"))
 			if (inputs.length == 1) {
-				
+				MessageManagement.showToPlayer(player, player.getRoom().getRoomLooking());
 				return;
 			}
 		if (inputs[0].equals("quit")) {
@@ -93,19 +105,19 @@ public class UserInput {
 			return;
 		}
 		if (inputs[0].equals("e") || inputs[0].equals("east")) {
-			
+			player.getRoom().enter(player, CommonContent.DIRECTION.EAST);
 			return;
 		}
 		if (inputs[0].equals("w") || inputs[0].equals("west")) {
-			
+			player.getRoom().enter(player, CommonContent.DIRECTION.WEST);
 			return;
 		}
 		if (inputs[0].equals("s") || inputs[0].equals("south")) {
-			
+			player.getRoom().enter(player, CommonContent.DIRECTION.SOUTH);
 			return;
 		}
 		if (inputs[0].equals("n") || inputs[0].equals("north")) {
-			
+			player.getRoom().enter(player, CommonContent.DIRECTION.NORTH);
 			return;
 		}
 		if (inputs[0].equals("ne") || inputs[0].equals("northeast")) {

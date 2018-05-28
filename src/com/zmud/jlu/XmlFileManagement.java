@@ -83,6 +83,7 @@ public class XmlFileManagement {
 		String password = getPlayerPassword(pnode);
 		
 		Player p0 = new Player(username,password);
+		p0.setId(id);
 		return p0;
 	}
 	
@@ -107,6 +108,19 @@ public class XmlFileManagement {
 				inf = info.getText();
 		}
 		return inf;
+	}
+	
+	//Write Required info
+	public static void setRequiredPlayerInfo(Element pnode, String targetinfo, String infomation){
+		List<Element> pinfo = pnode.elements();
+		Iterator<Element> it = pinfo.iterator();
+		Element info = null;
+
+		while(it.hasNext()){
+			info = it.next();
+			if(info.getName().equals(targetinfo))
+				info.setText(infomation);
+		}
 	}
 	
 	//Get target player password

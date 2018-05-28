@@ -4,11 +4,11 @@ import java.io.*;
 import java.net.*;
 import java.util.Map;
 
-public class Server {
-	int i = 0;
-	
+public class Server {	
 	//Set server port number
-	public static final int PORT_NUM = 2888;
+	public static final int PORT_NUM = 2888; 
+	
+	public static Map<String, Room> CityMap = null;
 	
 	private boolean connected = false;
 	
@@ -18,12 +18,12 @@ public class Server {
 	//Initial server
 	public Server() throws IOException {
 		RoomManagement.creatRooms();
+		CityMap = RoomManagement.getCityMap();
 		serverSocket = new ServerSocket(PORT_NUM);
 	}
 	
 	public void start() throws IOException {
 		while(true) {
-			System.out.println(++i);
 			Socket socket = serverSocket.accept();
 			new ServerThread(socket).start();
 		}
@@ -32,7 +32,11 @@ public class Server {
 	//Server thread creation and run
 	static class ServerThread extends Thread {
 		Socket socket;
-
+		
+		Player p0;
+		
+		Room location = null;
+				
 		public ServerThread(Socket socket) {
 			this.socket = socket;
 		}
@@ -62,10 +66,16 @@ public class Server {
 					if((cmd = incmd.readLine()) == null)
 						continue;
 					if(cmd.equalsIgnoreCase("register") || cmd.equalsIgnoreCase("login")){
-						UserInput.dealInput(cmd, output, incmd);
-						System.out.println(cmd);
-					}else if(cmd.equals("GOOD_BYE"))
+						p0 = UserInput.dealInput(cmd, output, incmd);
+					}else if(cmd.equals("GOOD_BYE")){
+						XmlFileManagement.setRequiredPlayerInfo(XmlFileManagement.getPlayerNodeByName(
+								XmlFileManagement.getDocment("Players.xml").getRootElement(), p0.getName()), 
+								"room", location.getRoomId());
 						break;
+					}
+					else{
+						UserInput.dealInput(p0, cmd);
+					}
 					output.write(cmd + " :frome server recieve\n");
 					output.flush();
 				}
@@ -74,6 +84,7 @@ public class Server {
 				e.printStackTrace();
 			}
 		}
+		
 	}
 
 	

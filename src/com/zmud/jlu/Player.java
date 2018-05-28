@@ -24,6 +24,8 @@ public class Player {
 	private String party;	//∞Ô≈…
 	private String location;
 	private String password;
+	
+	private Room room = null;
 
 	public Player() {
 		// creat player default value
@@ -34,7 +36,11 @@ public class Player {
 		this.password = password;
 	}
 		
-		
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		System.out.println("player" + this.getName() + "is dead");
+	}
 	
 	public Player(int experience,int con,int dex,int str,int wis,int hp,int max_hp,int nl,int max_nl,int jl,int max_jl,int id,String username,String party,String location){
 		this.experience = experience;
@@ -87,6 +93,14 @@ public class Player {
 	}
 	public void setName(String username){
 		
+	}
+	
+	public void setRoom(String roomid){
+		room = Server.CityMap.get(roomid);
+	}
+	
+	public Room getRoom(){
+		return room;
 	}
 	
 	public static void setUserAmount(int a){
