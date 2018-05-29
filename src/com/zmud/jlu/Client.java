@@ -37,13 +37,25 @@ public class Client extends guiclient{
 					cmd = in.readLine();
 				} catch (Exception e) {
 					try {
-						this.sleep(500);
+						this.sleep(200);
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}
 					continue;
 				}
-				textArea.append(cmd + "\n");
+				if(cmd.indexOf("/re_message$") != -1)
+				{
+					textArea_2.append(cmd.substring(12, cmd.length()) + "\n");
+				}
+				else if(cmd.indexOf("/room$") != -1){
+					String message[] = cmd.substring(6, cmd.length()).split("\t");
+					for(String re_message:message){
+						textArea.append(re_message + "\n");
+						textArea.append("---------------------------------------------------------------------------------------------------------------------------" + "\n");
+					}
+				}
+				else
+					textArea.append(cmd + "\n");
 			}
 		}
 	}
@@ -79,7 +91,7 @@ public class Client extends guiclient{
 		}
 	}
 
-	
+	//Main Frame
 	public Client() {
 		super();
 		input.addKeyListener(new KeyListener() {
@@ -91,6 +103,17 @@ public class Client extends guiclient{
 					incmd = input.getText();
 					//Blank check
 					if(!(incmd.equals(""))){
+						try{
+							if(incmd.equals("quit")){
+								out.write("GOOD_BYE\n");
+								out.flush();
+								connected = false;
+								socket.close();
+								out.close();
+							}
+						}catch (Exception e2) {
+							e2.printStackTrace();
+						}
 						try {
 							sendCmdtoServer(incmd);
 							//socket.close();
@@ -121,35 +144,68 @@ public class Client extends guiclient{
 			}
 		});
 		
+		//Chat room text field
+		textField_1.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER && connected){
+					String sent_message = textField_1.getText();
+					//Blank check
+					if(!(sent_message.equals(""))){
+						try {
+							sendCmdtoServer("/message$" + sent_message);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						} 
+						textField_1.setText("");
+					}
+				}else if (e.getKeyCode() == KeyEvent.VK_ENTER && !connected) {	//Connection check
+					incmd = textField_1.getText();
+					textField_1.setText("");
+					textArea_2.setText("NO_CONNECTION");
+				}
+			}
+		});
+		
 		//Connect button function
 		btnNewButton.addActionListener(new ActionListener() {
-
+			String cmd = "";
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// Connect to server
-				try {
-					connet(InetAddress.getLoopbackAddress());
-					in = new BufferedReader(new InputStreamReader(
-							socket.getInputStream())); //Get control command
-					out = new OutputStreamWriter(socket.getOutputStream());	//Pass data
-					String cmd = "";
-					if(!connected){
+				if(!connected) {
+					try{
+						connet(InetAddress.getLoopbackAddress());
+						in = new BufferedReader(new InputStreamReader(
+								socket.getInputStream())); //Get control command
+						out = new OutputStreamWriter(socket.getOutputStream());	//Pass data
 						out.write("I_AM_CLIENT\n");
 						out.flush();
 						socket.setSoTimeout(3000);
 						cmd = in.readLine();
+						if(cmd.equals("CONNECTION_ESTABLISHED") && !connected){
+							textArea_1.setText(textArea.getText() + cmd + "\n");
+							connected = true;
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						textArea_1.setText(textArea_1.getText() + "链接服务器失败！请重试\n");
+						System.exit(1);
 					}
-					if(cmd.equals("CONNECTION_ESTABLISHED") && !connected){
-						textArea_1.setText(textArea.getText() + cmd + "\n");
-						connected = true;
-					}else if(connected) {	//Connection check
+				}else if(connected) {	//Connection check
 						textArea_1.append("Already Connected\n");
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
-					textArea_1.setText(textArea_1.getText() + "链接服务器失败！请重试\n");
-					System.exit(1);
-				}
 			}
 		});
 		
@@ -195,14 +251,14 @@ public class Client extends guiclient{
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
-	public void setText(JTextArea screen, String Message) {
+	/*public void setText(JTextArea screen, String Message) {
 		String[] temp = Message.split("\t");
 		for (int i = 0; i < temp.length; i++) {
 			screen.setText(screen.getText() + temp[i] + "\n");
 			// System.out.print(temp[i]+"\n");
 		}
 		screen.setCaretPosition(screen.getDocument().getLength());
-	}
+	}*/
 	
 	public void start() throws IOException{
 			new MonitorThread().start();

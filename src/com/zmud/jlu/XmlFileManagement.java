@@ -95,6 +95,10 @@ public class XmlFileManagement {
 		return id;
 	}
 	
+	public static String getPlayerIdbyName(String name){
+		return getPlayerId(getPlayerNodeByName(getDocment("Players.xml").getRootElement(), name));
+	}
+	
 	//Get needed user info by name
 	public static String getRequiredPlayerInfo(Element pnode, String infomess){
 		List<Element> pinfo = pnode.elements();
@@ -118,9 +122,22 @@ public class XmlFileManagement {
 
 		while(it.hasNext()){
 			info = it.next();
-			if(info.getName().equals(targetinfo))
+			if(info.getName().equals(targetinfo)){
 				info.setText(infomation);
+				
+				//File Edit
+				OutputFormat format = OutputFormat.createPrettyPrint();
+		        format.setEncoding("UTF-8");
+		        try {
+					OutputStream outputStream = new FileOutputStream("Players.xml");
+					XMLWriter xmlWriter = new XMLWriter(outputStream,format);
+					xmlWriter.write(pnode.getDocument());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
+		
 	}
 	
 	//Get target player password

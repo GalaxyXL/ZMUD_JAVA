@@ -3,6 +3,8 @@ package com.zmud.jlu;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.zmud.jlu.CommonContent.DIRECTION;
+
 public class RoomManagement {
 	static Map<String, Room> cityMap = new HashMap<String, Room>();
 
@@ -16,17 +18,17 @@ public class RoomManagement {
 		//北大街
 		Room room_beidajie1 = new Room();
 		room_beidajie1.setRoomId("yangzhou_beidajie1");
-		room_beidajie1.SetRoomName("北大街");
+		room_beidajie1.SetRoomName("北大街1");
 		room_beidajie1.setDescription("你走在一条繁忙的街道上，看着操着南腔北调的人们行色匆匆，许多人都往南边走去，那里通向一个热闹的广场。东边是一家生意兴隆的宝昌客栈，来自各地的人们进进出出。西边是扬州一家老字号的钱庄，名为天阁斋。可以听到叮叮当当的金银声音。");
 		
 		Room room_beidajie2 = new Room();
 		room_beidajie2.setRoomId("yangzhou_beidajie2");
-		room_beidajie2.SetRoomName("北大街");
+		room_beidajie2.SetRoomName("北大街2");
 		room_beidajie2.setDescription("你走在一条繁忙的街道上，东边是扬州驿站，来自京城的快马有时会急驶而入，片刻后又会有另一匹快马从里面冲出来绝尘而去，南边是一家大店铺，门前的绣金旗子上写着一个斗大的“当”字，仔细倾听，可以听到压低的讨价还价的声音。");
 		
 		Room room_beidajie3 = new Room();
 		room_beidajie3.setRoomId("yangzhou_beidajie3");
-		room_beidajie3.SetRoomName("北大街");
+		room_beidajie3.SetRoomName("北大街3");
 		room_beidajie3.setDescription("这是一条宽阔的青石街道，向南北两头延伸。北边是北城门通向城外。南边显得很繁忙。东边是一家小吃店，店面窄小，恐怕只供应外卖。西边就是城隍庙。");
 		
 		Room room_beimen = new Room();
@@ -68,17 +70,17 @@ public class RoomManagement {
 		//南大街
 		Room room_nandajie1 = new Room();
 		room_nandajie1.setRoomId("yangzhou_nandajie1");
-		room_nandajie1.SetRoomName("南大街");
+		room_nandajie1.SetRoomName("南大街1");
 		room_nandajie1.setDescription("南大街乃是扬州城里的繁华地段，一到晚上，一派灯红酒绿，尤为热闹。笑声、歌声、琴声、箫声，汇成一片送入了你的耳朵，你不禁心猿意马，很想就此停步享受一番。北边是一个热闹的广场。西边是一片喧嚣，夹杂着“一五一十”的数钱声，原来那里是方圆千里之内最大的一家赌场");
 		
 		Room room_nandajie2 = new Room();
 		room_nandajie2.setRoomId("yangzhou_nandajie2");
-		room_nandajie2.SetRoomName("南大街");
+		room_nandajie2.SetRoomName("南大街2");
 		room_nandajie2.setDescription("你走在一条繁华的街道上，向南北两头延伸。南边是几座园林，北边通往市中心，西边是一家顾客众多的茶馆，三教九流人士都在那里谈天说地。东边则是官府特设的扬州盐局。");
 		
 		Room room_nandajie3 = new Room();
 		room_nandajie3.setRoomId("yangzhou_nandajie3");
-		room_nandajie3.SetRoomName("南大街");
+		room_nandajie3.SetRoomName("南大街3");
 		room_nandajie3.setDescription("你走在一条繁华的街道上，向南北两头延伸。南边是南城门，北边通往市中心，东西两边各是一座小园子");
 		
 		Room room_nanmen = new Room();
@@ -120,17 +122,17 @@ public class RoomManagement {
 		//西大街
 		Room room_xidajie1 = new Room();
 		room_xidajie1.setRoomId("yangzhou_xidajie1");
-		room_xidajie1.SetRoomName("西大街");
+		room_xidajie1.SetRoomName("西大街1");
 		room_xidajie1.setDescription("这是一条宽阔的青石板街道，向东西两头延伸。北边是一片青色的楼房，隐约传来阵阵的浪笑，那就是天下闻名的鸣玉坊。这里往东面走是一个热闹的广场。");
 		
 		Room room_xidajie2 = new Room();
 		room_xidajie2.setRoomId("yangzhou_xidajie2");
-		room_xidajie2.SetRoomName("西大街");
+		room_xidajie2.SetRoomName("西大街2");
 		room_xidajie2.setDescription("这是一条宽阔的青石板街道，向东西两头延伸。这里来来往往的游人你推我挤，热闹非常。从东面不时地传来笑语莺歌，声声撩人，而从西边则传来一阵阵的香气。南边是有名的扬州大明寺，北边就是瘦西湖边了。");
 		
 		Room room_xidajie3 = new Room();
 		room_xidajie3.setRoomId("yangzhou_xidajie3");
-		room_xidajie3.SetRoomName("西大街");
+		room_xidajie3.SetRoomName("西大街3");
 		room_xidajie3.setDescription("你走在西大街上，感到这里的街面要比别处的干净、整洁。街上的行人比以前也多了许多，东面是扬州的著名风景“瘦西湖”，西边是西城门。南边是一家已经关门了的珠宝店，而北边则是一座已经打烊了的大酒楼，挂着一幅招帘，门额上悬挂一方横匾，黑暗之中看不太清匾上的字迹。");
 		
 		Room room_ximen = new Room();
@@ -140,17 +142,17 @@ public class RoomManagement {
 		//东大街
 		Room room_dongdajie1 = new Room();
 		room_dongdajie1.setRoomId("yangzhou_dongdajie1");
-		room_dongdajie1.SetRoomName("东大街");
+		room_dongdajie1.SetRoomName("东大街1");
 		room_dongdajie1.setDescription(" 这是一条宽阔的青石板街道，向东西两头延伸。东边不时地传来朗朗的书声，西边是一个热闹的广场，南边则是一家古香古色的店铺，里边不时传出用乐器吹奏的曲调。");
 		
 		Room room_dongdajie2 = new Room();
 		room_dongdajie2.setRoomId("yangzhou_dongdajie2");
-		room_dongdajie2.SetRoomName("东大街");
+		room_dongdajie2.SetRoomName("东大街2");
 		room_dongdajie2.setDescription("这是一条宽阔的青石板街道，向东西两头延伸。东边不时地传来金属撞击声，西边人声嘈杂。北边是一座简朴的院子，半月形的大门上方写着“白鹿书院”四个烫金大字，苍劲有力。里面不时地传来学生们抑扬顿挫的读书声。南边是一家杂货铺。");
 		
 		Room room_dongdajie3 = new Room();
 		room_dongdajie3.setRoomId("yangzhou_dongdajie3");
-		room_dongdajie3.SetRoomName("东大街");
+		room_dongdajie3.SetRoomName("东大街3");
 		room_dongdajie3.setDescription("你走在东大街上，踩着坚实的青石板地面。东边是打铁铺和武器店，不时传来敲敲打打的金属撞击声，与西边朗朗的读书声混杂在一起。北边是一家老字号的药铺，南边是家寄卖店。");
 		
 		Room room_dongmen = new Room();
@@ -212,6 +214,14 @@ public class RoomManagement {
 		room_geyuan.setRoom(CommonContent.DIRECTION.EAST, room_nandajie3);
 		room_xiaopangu.setRoom(CommonContent.DIRECTION.WEST, room_nandajie3);
 		
+		//西大街
+		room_xidajie1.setRoom(CommonContent.DIRECTION.NORTH, room_qianzhuang);
+		room_xidajie1.setRoom(CommonContent.DIRECTION.SOUTH, room_duchang);
+		room_xidajie1.setRoom(CommonContent.DIRECTION.WEST, room_xidajie2);
+		room_xidajie1.setRoom(CommonContent.DIRECTION.EAST, room_guangchang);
+		
+		
+		
 		cityMap.put(room_guangchang.getRoomId(), room_guangchang);
 		cityMap.put(room_beidajie1.getRoomId(), room_beidajie1);
 		cityMap.put(room_beidajie2.getRoomId(), room_beidajie2);
@@ -234,6 +244,13 @@ public class RoomManagement {
 		cityMap.put(room_geyuan.getRoomId(), room_geyuan);
 		cityMap.put(room_xiaopangu.getRoomId(), room_xiaopangu);
 		cityMap.put(room_xidajie1.getRoomId(), room_xidajie1);
+		cityMap.put(room_xidajie2.getRoomId(), room_xidajie2);
+		cityMap.put(room_xidajie3.getRoomId(), room_xidajie3);
+		cityMap.put(room_ximen.getRoomId(), room_ximen);
+		cityMap.put(room_dongdajie1.getRoomId(), room_dongdajie1);
+		cityMap.put(room_dongdajie2.getRoomId(), room_dongdajie2);
+		cityMap.put(room_dongdajie3.getRoomId(), room_dongdajie3);
+		cityMap.put(room_dongmen.getRoomId(), room_dongmen);
 	}
 	
 	public static Map<String, Room> getCityMap(){

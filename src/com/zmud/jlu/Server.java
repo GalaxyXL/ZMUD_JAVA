@@ -2,6 +2,7 @@ package com.zmud.jlu;
 
 import java.io.*;
 import java.net.*;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Server {	
@@ -9,6 +10,8 @@ public class Server {
 	public static final int PORT_NUM = 2888; 
 	
 	public static Map<String, Room> CityMap = null;
+	
+	public static Map<String, Player> OnlinePlayer = new HashMap<String, Player>();
 	
 	private boolean connected = false;
 	
@@ -50,6 +53,9 @@ public class Server {
 				BufferedReader incmd = new BufferedReader(new InputStreamReader(
 						socket.getInputStream())); //Get control command
 				
+				String recieve_message = null;
+				String index = null;
+				
 				String cmd = incmd.readLine();
 				
 				//Verification
@@ -68,18 +74,23 @@ public class Server {
 					if(cmd.equalsIgnoreCase("register") || cmd.equalsIgnoreCase("login")){
 						p0 = UserInput.dealInput(cmd, output, incmd);
 					}else if(cmd.equals("GOOD_BYE")){
+						System.out.println("bye bye " + p0.getName());
 						XmlFileManagement.setRequiredPlayerInfo(XmlFileManagement.getPlayerNodeByName(
 								XmlFileManagement.getDocment("Players.xml").getRootElement(), p0.getName()), 
-								"room", location.getRoomId());
+								"room", p0.getRoom().getRoomId());
+						Room temp = p0.getRoom();
+						System.out.println(temp.getRoomName());
+						temp.removePlayer(p0);
+						OnlinePlayer.remove(Integer.toString(p0.getId()));
 						break;
+					}else if (cmd.indexOf("/message$") != -1) {
+						recieve_message = cmd.substring(9, cmd.length());
+						UserInput.dealInput(p0, recieve_message, 1);
 					}
 					else{
 						UserInput.dealInput(p0, cmd);
 					}
-					output.write(cmd + " :frome server recieve\n");
-					output.flush();
 				}
-				//socket.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

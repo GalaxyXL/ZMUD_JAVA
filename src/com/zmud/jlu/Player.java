@@ -1,10 +1,5 @@
 package com.zmud.jlu;
 
-//import org.dom4j.DOMImplementation;
-
-
-
-
 public class Player {
 	
 	public static int useramount = XmlFileManagement.readAmount(
